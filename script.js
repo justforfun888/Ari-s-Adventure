@@ -219,9 +219,9 @@ if (activeObstacles.length > 0) {
     }
     
     // 다음 장애물 생성 시도 (빈도 20% 증가)
-// 기존: Math.floor(Math.random() * 1573) + 787 (787-2360ms)
-// 변경: Math.floor(Math.random() * 1258) + 630 (630-1888ms)
-const nextObstacleTime = Math.floor(Math.random() * 680) + 1000;
+    // 기존: Math.floor(Math.random() * 680) + 1000 (1000-1680ms)
+    // 변경: Math.floor(Math.random() * 544) + 800 (800-1344ms)
+    const nextObstacleTime = Math.floor(Math.random() * 544) + 800;
     
     // 중요: 여기서 반드시 새로운 장애물 생성 일정 예약
     const obstacleTimerId = setTimeout(() => {
