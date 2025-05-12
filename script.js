@@ -137,27 +137,31 @@ function createObstacle() {
     });
     
     const containerWidth = gameContainer.offsetWidth;
-    const minimumDistance = 272; // 최소 장애물 사이 거리 20% 감소 (340px → 272px)
+    // 최소 거리를 랜덤하게 설정 (200px ~ 400px)
+    const minimumDistance = Math.floor(Math.random() * 200) + 200;
     
     // 최근 장애물이 충분히 이동했는지 확인
     let canCreateObstacle = true;
 
-if (activeObstacles.length > 0) {
-    const lastObstacle = activeObstacles[activeObstacles.length - 1];
-    if (lastObstacle && document.body.contains(lastObstacle)) {
-        const lastRect = lastObstacle.getBoundingClientRect();
-        const containerRect = gameContainer.getBoundingClientRect();
-        const distanceTraveled = containerRect.right - lastRect.right;
-        
-        // 게임 속도를 고려한 동적 최소 거리 계산
-        const dynamicMinDistance = minimumDistance * (currentSpeed / baseSpeed);
-        
-        // 마지막 장애물이 최소 거리보다 덜 이동했으면 생성 불가
-        if (distanceTraveled < dynamicMinDistance) {
-            canCreateObstacle = false;
+    if (activeObstacles.length > 0) {
+        const lastObstacle = activeObstacles[activeObstacles.length - 1];
+        if (lastObstacle && document.body.contains(lastObstacle)) {
+            const lastRect = lastObstacle.getBoundingClientRect();
+            const containerRect = gameContainer.getBoundingClientRect();
+            const distanceTraveled = containerRect.right - lastRect.right;
+            
+            // 게임 속도를 고려한 동적 최소 거리 계산
+            // 점프 시간(90ms)과 현재 속도를 고려하여 안전 거리 계산
+            const jumpDistance = (currentSpeed * 90) / 16.67; // 90ms 동안 이동할 거리
+            const safetyMargin = jumpDistance * 1.5; // 안전 마진 추가
+            const dynamicMinDistance = Math.max(minimumDistance, safetyMargin);
+            
+            // 마지막 장애물이 최소 거리보다 덜 이동했으면 생성 불가
+            if (distanceTraveled < dynamicMinDistance) {
+                canCreateObstacle = false;
+            }
         }
     }
-}
     
     if (canCreateObstacle) {
         // 랜덤 장애물 인덱스 선택
