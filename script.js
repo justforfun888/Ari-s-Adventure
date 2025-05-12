@@ -31,7 +31,16 @@ function loadHighScore() {
     if (savedData !== null) {
         try {
             const scoreData = JSON.parse(savedData);
-            highScore = scoreData.score || 0;
+            const currentTime = Date.now();
+            const savedTime = scoreData.timestamp || 0;
+            const sixHoursInMs = 6 * 60 * 60 * 1000; // 6시간을 밀리초로 변환
+
+            // 6시간이 지나지 않았고 유효한 점수가 있는 경우에만 최고 점수 로드
+            if (currentTime - savedTime < sixHoursInMs && scoreData.score) {
+                highScore = scoreData.score;
+            } else {
+                highScore = 0; // 6시간이 지났거나 유효하지 않은 경우 0으로 초기화
+            }
             updateHighScoreDisplay();
         } catch (e) {
             // 기존 형식으로 저장된 데이터 처리 (이전 버전 호환성)
@@ -50,6 +59,7 @@ function loadHighScore() {
 function saveHighScore() {
     const scoreData = {
         score: highScore,
+        timestamp: Date.now() // 현재 시간 저장
     };
     localStorage.setItem('jumpGameHighScore', JSON.stringify(scoreData));
 }
